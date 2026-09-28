@@ -35,6 +35,14 @@ export const KEYBINDING_DEFINITION_CORE_3: readonly KeybindingDefinition[] = [
     defaultBindings: platformBindings(['Mod+C'])
   },
   {
+    id: 'browser.annotateElement',
+    title: 'Annotate Page Element',
+    group: 'Browser',
+    scope: 'browser',
+    searchKeywords: ['shortcut', 'browser', 'annotate', 'element'],
+    defaultBindings: platformBindings(['Mod+Shift+C'])
+  },
+  {
     id: 'editor.find',
     title: 'Find in editor',
     group: 'Editors',

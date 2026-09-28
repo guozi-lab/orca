@@ -144,7 +144,7 @@ beforeEach(() => {
   Object.defineProperty(window, 'api', {
     configurable: true,
     value: {
-      browser: { onGrabModeToggle: inert, onGrabActionShortcut: inert },
+      browser: { onGrabModeToggle: inert, onAnnotateModeToggle: inert, onGrabActionShortcut: inert },
       ui: {
         onBrowserHistoryNavigate: historyNavigate.subscribe,
         onReloadBrowserPage: reloadRequests.subscribe,

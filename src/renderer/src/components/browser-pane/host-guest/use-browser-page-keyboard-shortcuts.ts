@@ -81,11 +81,44 @@ export function useBrowserPageKeyboardShortcuts({
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [chromeShortcutScope, keybindings, markupIsActive, startGrabIntent, workspaceId])
 
+  // Annotate shortcut: Mod+Shift+C triggers annotate element mode in the browser pane.
+  useEffect(() => {
+    if (chromeShortcutScope === 'inactive') {
+      return
+    }
+    const shortcutPlatform = getShortcutPlatform()
+    const handleKeyDown = (e: KeyboardEvent): void => {
+      if (isEditableKeyboardTarget(e.target)) {
+        return
+      }
+      if (
+        markupIsActive ||
+        !keybindingMatchesAction('browser.annotateElement', e, shortcutPlatform, keybindings) ||
+        !browserChromeShortcutOwnsEvent(chromeShortcutScope, e, workspaceId)
+      ) {
+        return
+      }
+      e.preventDefault()
+      startGrabIntent('annotate')
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [chromeShortcutScope, keybindings, markupIsActive, startGrabIntent, workspaceId])
+
   // Why: a focused guest gets Cmd/Ctrl+C inside Chromium; main forwards it back only when the page wouldn't use it for native copy.
   useEffect(() => {
     return window.api.browser.onGrabModeToggle((tabId) => {
       if (tabId === browserTabId) {
         startGrabIntent('copy')
+      }
+    })
+  }, [browserTabId, startGrabIntent])
+
+  // Why: a focused guest swallows Mod+Shift+C; main forwards it here so annotate works when interacting with page content.
+  useEffect(() => {
+    return window.api.browser.onAnnotateModeToggle((tabId) => {
+      if (tabId === browserTabId) {
+        startGrabIntent('annotate')
       }
     })
   }, [browserTabId, startGrabIntent])

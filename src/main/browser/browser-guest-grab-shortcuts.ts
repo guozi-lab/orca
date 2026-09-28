@@ -36,6 +36,16 @@ export function setupGrabShortcutForwarding(args: {
     if (
       !keybindingMatchesAction('browser.grabElement', input, process.platform, getKeybindings?.())
     ) {
+      // Not grab — check for annotate before returning.
+      if (
+        keybindingMatchesAction('browser.annotateElement', input, process.platform, getKeybindings?.())
+      ) {
+        event.preventDefault()
+        const renderer = resolveRenderer(browserTabId)
+        if (renderer) {
+          renderer.send('browser:annotateModeToggle', browserTabId)
+        }
+      }
       return
     }
 

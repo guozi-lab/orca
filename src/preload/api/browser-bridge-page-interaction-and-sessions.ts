@@ -111,6 +111,12 @@ export const browserPageInteractionAndSessionsApi = {
     ipcRenderer.on('browser:grabModeToggle', listener)
     return () => ipcRenderer.removeListener('browser:grabModeToggle', listener)
   },
+  onAnnotateModeToggle: (callback: (browserPageId: string) => void): (() => void) => {
+    const listener = (_event: Electron.IpcRendererEvent, browserPageId: string) =>
+      callback(browserPageId)
+    ipcRenderer.on('browser:annotateModeToggle', listener)
+    return () => ipcRenderer.removeListener('browser:annotateModeToggle', listener)
+  },
   onGrabActionShortcut: (
     callback: (args: { browserPageId: string; key: 'c' | 's' }) => void
   ): (() => void) => {
